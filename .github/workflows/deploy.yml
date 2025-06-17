@@ -17,6 +17,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Write GCP credentials to disk
+    run: echo '${{ secrets.GCP_SA_KEY }}' > $HOME/gcp-key.json
+
     - name: Set up GCP
       uses: google-github-actions/setup-gcloud@v1
       with:
