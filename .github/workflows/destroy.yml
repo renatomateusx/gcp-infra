@@ -27,7 +27,7 @@ jobs:
 
     - name: Init Terraform
       working-directory: lab8-git-actions-gke/infra
-      run: terraform init
+      run: terraform init -input=false
 
     - name: Plan Destroy
       working-directory: lab8-git-actions-gke/infra
