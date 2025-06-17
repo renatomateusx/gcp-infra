@@ -22,6 +22,10 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
+    - name: Auth fix for gsutil
+      run: |
+        gcloud auth activate-service-account --key-file="${{ secrets.GCP_SA_KEY }}"
+
     - name: Create temporary GCS bucket for Terraform state
       run: |
         export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-${GITHUB_RUN_ID}
