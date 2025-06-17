@@ -22,5 +22,5 @@ variable "project_id" {
 variable "region" { default = "us-central1" }
 variable "zone" { default = "us-central1-a" }
 variable "credentials_file" {
-    default = "able-veld-462218-h4-2b5706d3fc49.json"
+    default = "/infra/able-veld-462218-h4-2b5706d3fc49.json"
 }
