@@ -31,7 +31,8 @@ jobs:
       run: |
         export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-${GITHUB_RUN_ID}
         echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
-        gsutil mb -p $PROJECT_ID -l $GKE_ZONE gs://$BUCKET_NAME
+        export REGION=$GKE_ZONE
+        gsutil mb -p $PROJECT_ID -l $REGION gs://$BUCKET_NAME
 
     - name: Write backend.tf dynamically
       working-directory: lab8-git-actions-gke/infra
