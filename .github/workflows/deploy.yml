@@ -31,8 +31,12 @@ jobs:
       run: |
         export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-main
         echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
-        export REGION=${GKE_ZONE%-*}
-        gsutil mb -p $PROJECT_ID -l $REGION gs://$BUCKET_NAME
+        if ! gsutil ls -b gs://$BUCKET_NAME 2>/dev/null; then
+          echo "Bucket não existe, criando..."
+          gsutil mb -p $PROJECT_ID -l $GKE_ZONE gs://$BUCKET_NAME
+        else
+          echo "Bucket já existe, usando mesmo."
+        fi
 
     - name: Write backend.tf dynamically
       working-directory: lab8-git-actions-gke/infra
