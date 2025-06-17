@@ -39,15 +39,6 @@ jobs:
         }
         EOF
 
-    - name: Terraform Destroy
-      working-directory: lab8-git-actions-gke/infra
-      run: terraform destroy -auto-approve
-
-    - name: Delete GCS bucket
-      run: |
-        gsutil -m rm -r gs://$BUCKET_NAME
-
-
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v2
       with:
@@ -64,3 +55,8 @@ jobs:
     - name: Terraform Destroy
       working-directory: lab8-git-actions-gke/infra
       run: terraform destroy -auto-approve
+
+    - name: Delete GCS bucket
+      run: |
+        gsutil -m rm -r gs://$BUCKET_NAME
+
