@@ -22,6 +22,7 @@ jobs:
 
     - name: Auth fix for gsutil
       run: |
+        echo '${{ secrets.GCP_SA_KEY }}' > key.json
         gcloud auth activate-service-account --key-file="${{ secrets.GCP_SA_KEY }}"
 
     - name: Write backend.tf dynamically
