@@ -60,6 +60,22 @@ terraform.rc
 # Arquivos de ambiente
 .env
 .envrc
+*.env
+*.env.*
+
+# Arquivos de credenciais
+*credentials*.json
+*service-account*.json
+*key*.json
+*secret*.json
+*key*.pem
+*secret*.pem
 
 # Arquivos do sistema
 Thumbs.db
+
+# Arquivos de configuração sensíveis
+*values*.yml
+*values*.yaml
+*config*.yml
+*config*.yaml

@@ -22,8 +22,8 @@ variable "dynatrace_server" {
     default = "gaq62932.live.dynatrace.com"
 }
 
-variable "dynatrace_paas_token" {
-    type = string
-    description = "The Dynatrace PAAS token"
-    default = "dt0c01.4IDVWS3OEMAO7AYQHBIDFGHX.TRVIXEXOPOFF4S2TUS2QWSVSESQQS4VLXBMCOCVNR5SCF4XOFP4TQE5MU23UZYYD"
+variable "dynatrace_token" {
+    description = "Dynatrace API Token"
+    type        = string
+    default     = "${DYNATRACE_API_TOKEN}"
 }
