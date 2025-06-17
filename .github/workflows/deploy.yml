@@ -1,0 +1,49 @@
+name: Infra + App Deploy to GKE
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GKE_CLUSTER: gke-cluster
+      GKE_ZONE: us-central1-a
+      IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/error-api
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up GCP
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Init Terraform
+      working-directory: lab8-git-actions-gke/infra
+      run: terraform init
+
+    - name: Apply Infra
+      working-directory: lab8-git-actions-gke/infra
+      run: terraform apply -auto-approve
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker
+
+    - name: Build & Push Image
+      run: |
+        docker build -t $IMAGE lab8-git-actions-gke/
+        docker push $IMAGE
+
+    - name: Configure kubectl
+      run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE
+
+    - name: Deploy to GKE
+      run: |
+        kubectl apply -f lab8-git-actions-gke/k8s/deployment.yml
+        kubectl apply -f lab8-git-actions-gke/k8s/service.yml
