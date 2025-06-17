@@ -29,7 +29,7 @@ jobs:
 
     - name: Create temporary GCS bucket for Terraform state
       run: |
-        export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-${GITHUB_RUN_ID}
+        export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-main
         echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
         export REGION=${GKE_ZONE%-*}
         gsutil mb -p $PROJECT_ID -l $REGION gs://$BUCKET_NAME

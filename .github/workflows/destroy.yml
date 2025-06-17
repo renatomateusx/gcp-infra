@@ -28,7 +28,7 @@ jobs:
     - name: Write backend.tf dynamically
       working-directory: lab8-git-actions-gke/infra
       run: |
-        export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-${{ github.event.workflow_run.id }}
+        export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-main
         echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
         cat <<EOF > backend.tf
         terraform {
