@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: error-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: error-api
+  template:
+    metadata:
+      labels:
+        app: error-api
+    spec:
+      containers:
+      - name: error-api
+        image: gcr.io/able-veld-462218-h4/error-api:latest
+        ports:
+        - containerPort: 5000

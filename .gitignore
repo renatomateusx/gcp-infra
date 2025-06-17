@@ -1,0 +1,65 @@
+# Diretórios de estado do Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Variáveis sensíveis
+*.tfvars
+*.tfvars.json
+terraform.tfvars
+
+# Lockfiles do Terraform
+.terraform.lock.hcl
+
+# Credenciais
+*.json
+credentials.json
+*.pem
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Kubernetes configs
+.kube/
+*.kubeconfig
+
+# VSCode
+.vscode/
+
+# MacOS
+.DS_Store
+
+# GitHub Actions artefatos
+.github/*.log
+.github/*.tmp
+
+# Arquivos temporários
+*.swp
+*.bak
+*.tmp
+
+# Arquivos do Terraform
+**/.terraform/*
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Arquivos de ambiente
+.env
+.envrc
+
+# Arquivos do sistema
+Thumbs.db

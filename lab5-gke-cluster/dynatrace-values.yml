@@ -1,0 +1,9 @@
+apiUrl: gaq62932.live.dynatrace.com
+paasToken: dt0c01.4IDVWS3OEMAO7AYQHBIDFGHX.TRVIXEXOPOFF4S2TUS2QWSVSESQQS4VLXBMCOCVNR5SCF4XOFP4TQE5MU23UZYYD
+apiToken: dt0c01.4IDVWS3OEMAO7AYQHBIDFGHX.TRVIXEXOPOFF4S2TUS2QWSVSESQQS4VLXBMCOCVNR5SCF4XOFP4TQE5MU23UZYYD
+skipCertCheck: true
+
+# Configuração do OneAgent
+oneAgent:
+  appLogContentAccess: true
+  enableComponents: ["k8s", "runtimes", "services"]
