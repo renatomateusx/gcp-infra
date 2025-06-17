@@ -22,6 +22,24 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
+    - name: Create temporary GCS bucket for Terraform state
+      run: |
+        export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-${GITHUB_RUN_ID}
+        echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
+        gsutil mb -p $PROJECT_ID -l $GKE_ZONE gs://$BUCKET_NAME
+
+    - name: Write backend.tf dynamically
+      working-directory: lab8-git-actions-gke/infra
+      run: |
+        cat <<EOF > backend.tf
+        terraform {
+          backend "gcs" {
+            bucket  = "$BUCKET_NAME"
+            prefix  = "terraform/state"
+          }
+        }
+        EOF
+
     - name: Configure Docker
       run: gcloud auth configure-docker gcr.io --quiet
 

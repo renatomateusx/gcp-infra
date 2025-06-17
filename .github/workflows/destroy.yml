@@ -20,6 +20,29 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
+    - name: Write backend.tf dynamically
+      working-directory: lab8-git-actions-gke/infra
+      run: |
+        export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-${{ github.event.workflow_run.id }}
+        echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
+        cat <<EOF > backend.tf
+        terraform {
+          backend "gcs" {
+            bucket  = "$BUCKET_NAME"
+            prefix  = "terraform/state"
+          }
+        }
+        EOF
+
+    - name: Terraform Destroy
+      working-directory: lab8-git-actions-gke/infra
+      run: terraform destroy -auto-approve
+
+    - name: Delete GCS bucket
+      run: |
+        gsutil -m rm -r gs://$BUCKET_NAME
+
+
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v2
       with:
