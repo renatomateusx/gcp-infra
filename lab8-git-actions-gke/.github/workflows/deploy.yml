@@ -2,7 +2,7 @@ name: Infra + App Deploy to GKE
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   deploy:
