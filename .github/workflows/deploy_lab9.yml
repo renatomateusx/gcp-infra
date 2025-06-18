@@ -94,20 +94,37 @@ jobs:
     - name: Create namespace
       run: kubectl create namespace dynatrace --dry-run=client -o yaml | kubectl apply -f -
 
-    - name: Add Helm repository
-      run: helm repo add dynatrace https://dynatrace.github.io/helm-charts
-
-    - name: Update Helm repositories
-      run: helm repo update
-
     - name: Install Dynatrace Operator
       run: |
-        helm install dynatrace-operator dynatrace/dynatrace-operator \
-          --namespace dynatrace \
-          --version 0.15.0 \
-          --set apiToken=${{ secrets.DYNATRACE_API_TOKEN }} \
-          --set paasToken=${{ secrets.DYNATRACE_PAAS_TOKEN }} \
-          --set apiUrl=gaq62932.live.dynatrace.com
+        kubectl apply -f https://github.com/Dynatrace/dynatrace-operator/releases/latest/download/kubernetes.yaml
+
+    - name: Wait for Dynatrace Operator
+      run: kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=dynatrace-operator -n dynatrace --timeout=300s
+
+    - name: Create Dynakube
+      run: |
+        cat <<EOF | kubectl apply -f -
+        apiVersion: dynatrace.com/v1beta1
+        kind: DynaKube
+        metadata:
+          name: dynakube
+          namespace: dynatrace
+        spec:
+          apiUrl: gaq62932.live.dynatrace.com
+          tokens: dynakube
+          oneAgent:
+            classicFullStack:
+              enabled: true
+            applicationMonitoring:
+              enabled: true
+        EOF
+
+    - name: Create Dynatrace Secret
+      run: |
+        kubectl create secret generic dynakube \
+          --from-literal="apiToken=${{ secrets.DYNATRACE_API_TOKEN }}" \
+          --from-literal="paasToken=${{ secrets.DYNATRACE_PAAS_TOKEN }}" \
+          -n dynatrace --dry-run=client -o yaml | kubectl apply -f -
 
     - name: Deploy to GKE
       run: |
