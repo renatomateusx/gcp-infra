@@ -95,11 +95,10 @@ jobs:
       run: kubectl create namespace dynatrace --dry-run=client -o yaml | kubectl apply -f -
 
     - name: Add Helm repository
-      run: helm repo add dynatrace https://helm.dynatrace.com
+      run: helm repo add dynatrace https://dynatrace.github.io/helm-charts
 
-    - name: Testar conectividade Dynatrace Helm Repo
-      run: |
-        curl -v https://helm.dynatrace.com/index.yaml
+    - name: Update Helm repositories
+      run: helm repo update
 
     - name: Install Dynatrace Operator
       run: |
