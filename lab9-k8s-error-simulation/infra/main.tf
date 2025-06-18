@@ -67,6 +67,10 @@ resource "google_container_cluster" "primary" {
     machine_type = "e2-medium"
     oauth_scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
+
+  lifecycle {
+     create_before_destroy = true
+  }
 }
 
 # Create a namespace for the Dynatrace operator
@@ -80,6 +84,8 @@ resource "kubernetes_namespace" "dynatrace" {
   metadata {
     name = "dynatrace"
   }
+  
+  depends_on = [google_container_cluster.primary]
 }
 
 # This will install the Dynatrace operator
@@ -116,7 +122,7 @@ resource "kubernetes_manifest" "dynakube_crd" {
     dynatrace_url = var.dynatrace_server
   }))
 
-  depends_on = [helm_release.dynatrace_operator]
+  depends_on = [google_container_cluster.primary, helm_release.dynatrace_operator]
 }
 
 
