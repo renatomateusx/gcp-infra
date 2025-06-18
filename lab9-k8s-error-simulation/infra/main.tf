@@ -112,7 +112,7 @@ resource "helm_release" "dynatrace_operator" {
 # The CRD will be created in the project "able-veld-462218-h4"
 # The CRD will be created in the region "us-central1"
 resource "kubernetes_manifest" "dynakube_crd" {
-  manifest = yamldecode(templatefile("${path.module}/dynakube.tpl.yaml", {
+  manifest = yamldecode(templatefile("${path.module}/dynakube.tpl.yml", {
     dynatrace_url = var.dynatrace_server
   }))
 
@@ -149,5 +149,5 @@ variable "dynatrace_api_token" {
 
 #output
 output "template_test" {
-  value = fileexists("${path.module}/../dynatrace/dynatrace-values.tpl.yml")
+  value = fileexists("${path.module}/dynatrace-values.tpl.yml")
 }
