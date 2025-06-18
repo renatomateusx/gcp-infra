@@ -11,6 +11,7 @@ jobs:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       GKE_CLUSTER: gke-cluster
       GKE_ZONE: us-central1-a
+      GKE_REGION: us-central1
       IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/error-api
 
     steps:
@@ -33,7 +34,7 @@ jobs:
         echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
         if ! gsutil ls -b gs://$BUCKET_NAME 2>/dev/null; then
           echo "Bucket não existe, criando..."
-          gsutil mb -p $PROJECT_ID -l $GKE_ZONE gs://$BUCKET_NAME
+          gsutil mb -p $PROJECT_ID -l $GKE_REGION gs://$BUCKET_NAME
         else
           echo "Bucket já existe, usando mesmo."
         fi
