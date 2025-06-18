@@ -9,7 +9,7 @@ jobs:
     env:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       GKE_CLUSTER: gke-cluster
-      GKE_ZONE: us-central1-a
+      GKE_ZONE: us-central1
 
     steps:
     - name: Checkout

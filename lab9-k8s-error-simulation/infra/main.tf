@@ -137,4 +137,3 @@ variable "zone" { }
 variable "dynatrace_server" { }
 variable "dynatrace_paas_token" { }
 variable "dynatrace_api_token" { }
-
