@@ -35,24 +35,10 @@ provider "google" {
 # The provider will be configured with the host, token, and cluster CA certificate
 data "google_client_config" "default" {}
 
-# This will configure the Kubernetes provider
-# The provider will be used to create resources in the Kubernetes platform
-# The provider will be configured with the host, token, and cluster CA certificate
-provider "kubernetes" {
-  host  = "https://${google_container_cluster.primary.endpoint}"
-  token = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
-}
-
-# This will configure the Helm provider
-# The provider will be used to create resources in the Helm platform
-# The provider will be configured with the host, token, and cluster CA certificate
-provider "helm" {
-  kubernetes {
-    host  = "https://${google_container_cluster.primary.endpoint}"
-    token = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
-  }
+# Get GKE cluster credentials
+data "google_container_cluster" "primary" {
+  name     = google_container_cluster.primary.name
+  location = google_container_cluster.primary.location
 }
 
 # Create a GKE cluster
@@ -127,7 +113,7 @@ resource "kubernetes_manifest" "dynakube_crd" {
     dynatrace_url = var.dynatrace_server
   }))
 
-  depends_on = [google_container_cluster.primary, helm_release.dynatrace_operator]
+  depends_on = [data.google_container_cluster.primary, helm_release.dynatrace_operator]
 }
 
 
