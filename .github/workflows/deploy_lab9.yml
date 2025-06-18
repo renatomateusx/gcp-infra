@@ -97,6 +97,10 @@ jobs:
     - name: Add Helm repository
       run: helm repo add dynatrace https://helm.dynatrace.com
 
+    - name: Testar conectividade Dynatrace Helm Repo
+      run: |
+        curl -v https://helm.dynatrace.com/index.yaml
+
     - name: Install Dynatrace Operator
       run: |
         helm install dynatrace-operator dynatrace/dynatrace-operator \
