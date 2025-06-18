@@ -132,11 +132,21 @@ resource "kubernetes_manifest" "dynakube_crd" {
 variable "project_id" {
     default = "able-veld-462218-h4"
 }
-variable "region" { }
-variable "zone" { }
-variable "dynatrace_server" { }
-variable "dynatrace_paas_token" { }
-variable "dynatrace_api_token" { }
+variable "region" { 
+    default = "us-central1"
+}
+variable "zone" { 
+    default = "us-central1-a"
+}
+variable "dynatrace_server" { 
+    default = "gaq62932.live.dynatrace.com"
+}
+variable "dynatrace_paas_token" { 
+    default = "dt0c01.4IDVWS3OEMAO7AYQHBIDFGHX.TRVIXEXOPOFF4S2TUS2QWSVSESQQS4VLXBMCOCVNR5SCF4XOFP4TQE5MU23UZYYD"
+}
+variable "dynatrace_api_token" { 
+    default = "ZHQwYzAxLjRJRFZXUzNPRU1BTzdBWVFIQklERkdIWC5UUlZJWEVYT1BPRkY0UzJUVVMyUVdTVlNFU1FRUzRWTFhCTUNPQ1ZOUjVTQ0Y0WE9GUDRUUUU1TVUyM1VaWVlE"
+}
 
 #output
 output "template_test" {
