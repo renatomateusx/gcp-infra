@@ -98,7 +98,7 @@ resource "helm_release" "dynatrace_operator" {
   version    = "0.15.0"
 
   values = [
-    templatefile("${path.module}/dynatrace/dynatrace-values.tpl.yml", {
+    templatefile("${path.module}/../dynatrace/dynatrace-values.tpl.yml", {
       dynatrace_url         = var.dynatrace_server,
       dynatrace_paas_token  = var.dynatrace_paas_token,
       dynatrace_api_token   = var.dynatrace_api_token
@@ -137,3 +137,8 @@ variable "zone" { }
 variable "dynatrace_server" { }
 variable "dynatrace_paas_token" { }
 variable "dynatrace_api_token" { }
+
+#output
+output "template_test" {
+  value = fileexists("${path.module}/../dynatrace/dynatrace-values.tpl.yml")
+}
