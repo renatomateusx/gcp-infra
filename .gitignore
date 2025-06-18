@@ -75,7 +75,7 @@ terraform.rc
 Thumbs.db
 
 # Arquivos de configuração sensíveis
-*values*.yml
-*values*.yaml
-*config*.yml
-*config*.yaml
+# *values*.yml
+# *values*.yaml
+# *config*.yml
+# *config*.yaml

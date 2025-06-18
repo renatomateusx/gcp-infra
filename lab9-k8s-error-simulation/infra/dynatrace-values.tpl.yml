@@ -1,0 +1,8 @@
+apiUrl: https://${dynatrace_url}.live.dynatrace.com
+paasToken: ${dynatrace_paas_token}
+apiToken: ${dynatrace_api_token}
+skipCertCheck: true
+
+oneAgent:
+  appLogContentAccess: true
+  enableComponents: ["k8s", "runtimes", "services"]
