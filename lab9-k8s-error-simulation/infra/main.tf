@@ -114,8 +114,6 @@ resource "helm_release" "dynatrace_operator" {
       dynatrace_api_token   = var.dynatrace_api_token
     })
   ]
-
-  depends_on = [kubernetes_namespace.dynatrace]
 }
 
 # This will create a Dynakube CRD
@@ -154,14 +152,10 @@ variable "dynatrace_server" {
     default = "gaq62932.live.dynatrace.com"
 }
 variable "dynatrace_paas_token" { 
-    description = "Dynatrace PAAS Token"
-    type        = string
-    sensitive   = true
+    default = "dt0c01.4IDVWS3OEMAO7AYQHBIDFGHX.TRVIXEXOPOFF4S2TUS2QWSVSESQQS4VLXBMCOCVNR5SCF4XOFP4TQE5MU23UZYYD"
 }
 variable "dynatrace_api_token" { 
-    description = "Dynatrace API Token"
-    type        = string
-    sensitive   = true
+    default = "ZHQwYzAxLjRJRFZXUzNPRU1BTzdBWVFIQklERkdIWC5UUlZJWEVYT1BPRkY0UzJUVVMyUVdTVlNFU1FRUzRWTFhCTUNPQ1ZOUjVTQ0Y0WE9GUDRUUUU1TVUyM1VaWVlE"
 }
 
 #output
