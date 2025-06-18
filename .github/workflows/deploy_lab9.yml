@@ -1,0 +1,91 @@
+name: Infra + App Deploy to GKE
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GKE_CLUSTER: gke-cluster
+      GKE_ZONE: us-central1-a
+      IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/error-api
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: Auth fix for gsutil
+      run: |
+        echo '${{ secrets.GCP_SA_KEY }}' > key.json
+        gcloud auth activate-service-account --key-file=key.json
+
+    - name: Create temporary GCS bucket for Terraform state
+      run: |
+        export BUCKET_NAME=tf-state-${{ secrets.GCP_PROJECT_ID }}-main
+        echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
+        if ! gsutil ls -b gs://$BUCKET_NAME 2>/dev/null; then
+          echo "Bucket não existe, criando..."
+          gsutil mb -p $PROJECT_ID -l $GKE_ZONE gs://$BUCKET_NAME
+        else
+          echo "Bucket já existe, usando mesmo."
+        fi
+
+    - name: Write backend.tf dynamically
+      working-directory: lab9-k8s-error-simulation/infra
+      run: |
+        cat <<EOF > backend.tf
+        terraform {
+          backend "gcs" {
+            bucket  = "$BUCKET_NAME"
+            prefix  = "terraform/state"
+          }
+        }
+        EOF
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker gcr.io --quiet
+
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.7
+
+    - name: Init Terraform
+      working-directory: lab9-k8s-error-simulation/infra
+      run: terraform init
+
+    - name: Apply Infra
+      working-directory: lab9-k8s-error-simulation/infra
+      run: terraform apply -auto-approve
+
+    - name: Build & Push Image
+      run: |
+        docker build -t $IMAGE lab9-k8s-error-simulation/
+        docker push $IMAGE
+
+    - name: Configure kubectl
+      run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE
+
+    - name: Install Google Cloud SDK and gke-gcloud-auth-plugin
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https ca-certificates gnupg curl
+        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" \
+          | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+          | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+        sudo apt-get update
+        sudo apt-get install -y google-cloud-sdk google-cloud-sdk-gke-gcloud-auth-plugin
+
+    - name: Deploy to GKE
+      run: |
+        kubectl apply -f lab9-k8s-error-simulation/k8s/deployment.yml
+        kubectl apply -f lab9-k8s-error-simulation/k8s/service.yml

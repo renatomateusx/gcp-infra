@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: error-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: error-app
+  template:
+    metadata:
+      labels:
+        app: error-app
+    spec:
+      containers:
+        - name: error-app
+          image: busybox
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              if [ $((RANDOM % 2)) -eq 0 ]; then
+                echo "Failing container!"
+                exit 1
+              else
+                echo "Healthy container!"
+                touch /tmp/healthy
+                touch /tmp/ready
+                while true; do sleep 30; done
+              fi
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /tmp/ready
+            initialDelaySeconds: 5
+            periodSeconds: 10
