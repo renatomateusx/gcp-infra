@@ -74,6 +74,21 @@ jobs:
     - name: Configure kubectl
       run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE
 
+    - name: Create namespace
+      run: kubectl create namespace dynatrace --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Add Helm repository
+      run: helm repo add dynatrace https://helm.dynatrace.com
+
+    - name: Install Dynatrace Operator
+      run: |
+        helm install dynatrace-operator dynatrace/dynatrace-operator \
+          --namespace dynatrace \
+          --version 0.15.0 \
+          --set apiToken=${{ secrets.DYNATRACE_API_TOKEN }} \
+          --set paasToken=${{ secrets.DYNATRACE_PAAS_TOKEN }} \
+          --set apiUrl=gaq62932.live.dynatrace.com
+
     - name: Install Google Cloud SDK and gke-gcloud-auth-plugin
       run: |
         sudo apt-get update
